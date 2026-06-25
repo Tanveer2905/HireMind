@@ -234,7 +234,3 @@ All endpoints under the multi-tenant backend require a Bearer JWT token (obtaine
 ## Contributing
 
 Fork the repo, create a branch, make your changes, and open a pull request. If you're adding a new scoring factor or modifying the ranking formula, include before/after ranking comparisons on the sample data.
-
-## License
-
-MIT
