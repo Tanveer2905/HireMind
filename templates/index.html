@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HireMind — Intelligent Candidate Ranking</title>
+    <meta name="description" content="AI-powered hiring copilot with LLM reasoning, semantic search, and explainable rankings. Local-first, offline, and free.">
+    <link rel="icon" href="/static/favicon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style-premium.css">
+</head>
+<body>
+
+    <!-- Animated Background -->
+    <div class="bg-scene">
+        <div class="bg-orb bg-orb--1"></div>
+        <div class="bg-orb bg-orb--2"></div>
+        <div class="bg-orb bg-orb--3"></div>
+        <div class="bg-orb bg-orb--4"></div>
+        <div class="bg-grid"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav__inner">
+            <div class="nav__brand">
+                <div class="nav__logo">
+                    <img src="/static/favicon.png" alt="HireMind Logo" style="width: 100%; height: 100%; border-radius: 50%;">
+                </div>
+                <span class="nav__title">HireMind</span>
+            </div>
+            <div class="nav__status">
+                <div class="nav__badge" id="llmStatusBadge" title="LLM Status">
+                    <span class="nav__badge-dot nav__badge-dot--grey" id="llmDot"></span>
+                    <span id="llmStatusText">Checking LLM...</span>
+                </div>
+                <div class="nav__badge" id="resumeCountBadge">
+                    <span class="nav__badge-dot"></span>
+                    <span id="resumeCountText">0 resumes</span>
+                </div>
+                <button class="btn btn--icon nav__chat-toggle" id="chatToggleBtn" title="Open AI Chat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </button>
+                <button class="btn btn--icon" id="logoutBtn" title="Logout" style="display: none; margin-left: 10px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero__content">
+                <h1 class="hero__title">
+                    <span class="hero__title-line">Welcome to</span>
+                    <span class="hero__title-line hero__title-line--accent">HireMind</span>
+                </h1>
+                <p class="hero__subtitle">
+                    Semantic analysis with LLM reasoning — understands skills, experience, and role fit beyond keywords.
+                </p>
+            </div>
+        </section>
+
+        <!-- Input Section -->
+        <section class="input-section">
+            <div class="input-grid">
+
+                <!-- Job Description Card -->
+                <div class="glass-card glass-card--3d" id="jdCard">
+                    <div class="glass-card__header">
+                        <div class="glass-card__icon glass-card__icon--purple">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </div>
+                        <div>
+                            <h2 class="glass-card__title">Job Description</h2>
+                            <p class="glass-card__desc">Paste the full job posting</p>
+                        </div>
+                    </div>
+                    <div class="glass-card__body">
+                        <textarea id="jdInput" class="glass-textarea" placeholder="Paste the job description here...&#10;&#10;Include requirements, responsibilities, and desired qualifications." rows="8"></textarea>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="input-right">
+                    <!-- Must-Have Skills Card -->
+                    <div class="glass-card glass-card--3d" id="skillsCard">
+                        <div class="glass-card__header">
+                            <div class="glass-card__icon glass-card__icon--cyan">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            </div>
+                            <div>
+                                <h2 class="glass-card__title">Must-Have Skills</h2>
+                                <p class="glass-card__desc">Hard filters — candidates missing these are rejected</p>
+                            </div>
+                        </div>
+                        <div class="glass-card__body">
+                            <div class="skill-input-row">
+                                <input type="text" id="skillInput" class="glass-input" placeholder="e.g. Python, Docker..." />
+                                <button class="btn btn--icon" id="addSkillBtn" title="Add skill">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                </button>
+                            </div>
+                            <div class="skill-chips" id="skillChips"></div>
+                        </div>
+                    </div>
+
+                    <!-- Resume Upload Card -->
+                    <div class="glass-card glass-card--3d" id="uploadCard">
+                        <div class="glass-card__header">
+                            <div class="glass-card__icon glass-card__icon--emerald">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            </div>
+                            <div>
+                                <h2 class="glass-card__title">Resumes</h2>
+                                <p class="glass-card__desc">Upload PDFs or use existing files</p>
+                            </div>
+                        </div>
+                        <div class="glass-card__body">
+                            <div class="dropzone" id="dropzone">
+                                <div class="dropzone__icon">
+                                    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="8" y="6" width="32" height="36" rx="4"/><path d="M16 20h16M16 26h10M16 14h8" opacity=".5"/><circle cx="34" cy="34" r="10" fill="rgba(99,102,241,.15)" stroke="rgba(99,102,241,.6)"/><path d="M34 30v8M30 34h8" stroke="rgba(99,102,241,.8)" stroke-width="2"/></svg>
+                                </div>
+                                <p class="dropzone__text">Drop PDF files here</p>
+                                <p class="dropzone__hint">or click to browse</p>
+                                <input type="file" id="fileInput" multiple accept=".pdf" hidden />
+                            </div>
+                            <div class="resume-list" id="resumeList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analyze Controls -->
+            <div class="analyze-row">
+                <label class="llm-toggle" id="llmToggleLabel" title="Enable LLM-powered AI reasoning (requires Ollama)">
+                    <input type="checkbox" id="llmToggle" />
+                    <span class="llm-toggle__slider"></span>
+                    <span class="llm-toggle__text">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93L12 10v2"/><circle cx="12" cy="16" r="1"/><path d="M4.93 4.93l1.41 1.41M19.07 4.93l-1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M17.66 17.66l1.41 1.41"/></svg>
+                        AI Reasoning (slower, smarter)
+                    </span>
+                </label>
+                <button class="btn btn--primary btn--glow" id="analyzeBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg>
+                    <span>Analyze Candidates</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <section class="loading-section" id="loadingSection" style="display:none;">
+            <div class="glass-card glass-card--loading">
+                <div class="loader">
+                    <div class="loader__ring"></div>
+                    <div class="loader__ring loader__ring--2"></div>
+                    <div class="loader__ring loader__ring--3"></div>
+                </div>
+                <h3 class="loading-title">Analyzing Candidates</h3>
+                <p class="loading-subtitle" id="loadingText">Parsing resumes and generating embeddings...</p>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="resultsSection" style="display:none;">
+
+            <!-- Stats Bar -->
+            <div class="stats-bar" id="statsBar">
+                <div class="stat-item">
+                    <span class="stat-value" id="statCandidates">0</span>
+                    <span class="stat-label">Candidates</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="statFiltered">0</span>
+                    <span class="stat-label">Filtered</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="statSkills">0</span>
+                    <span class="stat-label">JD Skills</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="statTime">0s</span>
+                    <span class="stat-label">Process Time</span>
+                </div>
+                <div class="stat-item" id="statLLMContainer" style="display:none;">
+                    <span class="stat-value" id="statLLM">✓</span>
+                    <span class="stat-label">AI Reasoning</span>
+                </div>
+            </div>
+
+            <!-- Results Header -->
+            <div class="results-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h2 class="results-title">
+                        Ranking Results
+                    </h2>
+                    <div class="results-detected-skills" id="detectedSkillsArea"></div>
+                </div>
+                <button class="btn btn--secondary" id="downloadExcelBtn" title="Download Excel">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Export Excel
+                </button>
+            </div>
+
+            <!-- Candidate Cards Grid -->
+            <div class="candidates-grid" id="candidatesGrid"></div>
+
+        </section>
+
+    </main>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal glass-card" id="detailModal">
+            <button class="modal__close" id="modalClose">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="modal__content" id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- Chat Drawer -->
+    <div class="chat-drawer" id="chatDrawer">
+        <div class="chat-drawer__header">
+            <div class="chat-drawer__title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93L12 10v2"/><circle cx="12" cy="16" r="1"/><path d="M4.93 4.93l1.41 1.41M19.07 4.93l-1.41 1.41M2 12h2M20 12h2"/></svg>
+                AI Copilot Chat
+            </div>
+            <button class="chat-drawer__close" id="chatCloseBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="chat-drawer__messages" id="chatMessages">
+            <div class="chat-msg chat-msg--assistant">
+                <div class="chat-msg__content">
+                    Hi! I'm your AI hiring copilot. Try asking me things like:
+                    <ul style="margin:8px 0 0 16px; font-size:0.8rem; opacity:0.8;">
+                        <li>"Find Python developers with 3+ years"</li>
+                        <li>"Who has both React and Node.js?"</li>
+                        <li>"Show top 5 candidates by skill match"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="chat-drawer__input">
+            <input type="text" id="chatInput" class="glass-input" placeholder="Ask about candidates..." />
+            <button class="btn btn--icon" id="chatSendBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="authModal" style="display: flex;">
+        <div class="modal glass-card" style="max-width: 400px; padding: 2rem;">
+            <h2 class="results-title" style="margin-bottom: 1rem; text-align: center;">Welcome</h2>
+            <div id="authTabs" style="display: flex; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <button id="tabLogin" style="flex: 1; padding: 0.5rem; background: none; border: none; color: white; cursor: pointer; border-bottom: 2px solid var(--accent-purple);">Login</button>
+                <button id="tabRegister" style="flex: 1; padding: 0.5rem; background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; border-bottom: 2px solid transparent;">Register</button>
+            </div>
+            <form id="authForm" style="display: flex; flex-direction: column; gap: 1rem;">
+                <input type="email" id="authEmail" class="glass-input" placeholder="Email" required />
+                <input type="password" id="authPassword" class="glass-input" placeholder="Password" required />
+                <button type="submit" class="btn btn--primary btn--glow" style="width: 100%;" id="authSubmitBtn">Login</button>
+            </form>
+            <p id="authError" style="color: var(--accent-rose); font-size: 0.8rem; margin-top: 1rem; text-align: center; display: none;"></p>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js?v=3"></script>
+</body>
+</html>
